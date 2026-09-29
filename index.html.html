@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio data of Field staff of Rampur Forest Circle</title>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        /* Login Screen */
+        #login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+        }
+
+        .login-card {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            margin-bottom: 8px;
+            color: #1b4332;
+        }
+
+        .login-card p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.85em;
+            color: #444;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .btn {
+            background-color: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: #1b4332;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .error-message {
+            color: #d90429;
+            font-size: 0.85em;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Dashboard Screen */
+        #app-page {
+            display: none;
+        }
+
+        header {
+            background-color: #1b4332;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.3em;
+        }
+
+        .btn-logout {
+            background-color: #d90429;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px 30px;
+        }
+
+        .controls-bar {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            padding: 9px 15px;
+            width: 320px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.9em;
+        }
+
+        .export-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-export {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-excel { background-color: #1f7244; }
+        .btn-excel:hover { background-color: #154c2d; }
+
+        .btn-word { background-color: #185abd; }
+        .btn-word:hover { background-color: #103c7e; }
+
+        .btn-pdf { background-color: #d90429; }
+        .btn-pdf:hover { background-color: #9e031d; }
+
+        .table-responsive {
+            max-height: 75vh;
+            overflow-x: auto;
+            overflow-y: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8em;
+            text-align: left;
+            min-width: 1800px;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #2d6a4f;
+            color: white;
+            padding: 10px 8px;
+            font-weight: 600;
+            z-index: 2;
+            border-right: 1px solid #3d8b68;
+        }
+
+        thead tr.header-group th {
+            background-color: #1b4332;
+            text-align: center;
+        }
+
+        tbody td {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            border-right: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f8f5;
+        }
+
+        .btn-edit {
+            background-color: #52b788;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .btn-edit:hover {
+            background-color: #40916c;
+        }
+
+        .thumb-img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #eee;
+            border: 1px solid #ccc;
+        }
+
+        /* Modal Overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 95%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #1b4332;
+            border-bottom: 2px solid #2d6a4f;
+            padding-bottom: 5px;
+        }
+
+        .section-title {
+            background-color: #e8f5e9;
+            color: #1b4332;
+            padding: 6px 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin: 15px 0 10px 0;
+            border-left: 4px solid #2d6a4f;
+            border-radius: 2px;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        /* Print Specific Styling for PDF Export */
+        @media print {
+            body {
+                background: white;
+            }
+            #login-page, header, .controls-bar, .btn-edit, .modal {
+                display: none !important;
+            }
+            #app-page {
+                display: block !important;
+            }
+            .table-responsive {
+                max-height: none;
+                overflow: visible;
+                box-shadow: none;
+            }
+            table {
+                width: 100%;
+                min-width: 100%;
+                font-size: 0.65em;
+            }
+            thead th {
+                background-color: #2d6a4f !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN PAGE -->
+    <div id="login-page">
+        <div class="login-card">
+            <h2>Rampur Forest Circle</h2>
+            <p>Field Staff Bio-Data Portal</p>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">User ID Name</label>
+                    <input type="text" id="username" placeholder="Enter user id" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-full">Login</button>
+                <div id="login-error" class="error-message">Invalid User ID Name or Password.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD PAGE -->
+    <div id="app-page">
+        <header>
+            <h1>Bio data of Field staff of Rampur Forest Circle</h1>
+            <button class="btn-logout" onclick="handleLogout()">Logout</button>
+        </header>
+
+        <div class="container">
+            <div class="controls-bar">
+                <div class="search-bar">
+                    <input type="text" id="search-input" onkeyup="filterTable()" placeholder="Search Beat, Block, Range, Staff Name...">
+                </div>
+                <div class="export-group">
+                    <button class="btn-export btn-excel" onclick="exportToExcel()">📊 Export Excel</button>
+                    <button class="btn-export btn-word" onclick="exportToWord()">📝 Export Word</button>
+                    <button class="btn-export btn-pdf" onclick="exportToPDF()">🖨️ Print / Save PDF</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="bio-table">
+                    <thead>
+                        <tr class="header-group">
+                            <th colspan="6">Administrative Location</th>
+                            <th colspan="6">Range Forest Officer (RFO) Details</th>
+                            <th colspan="6">Deputy Ranger Details</th>
+                            <th colspan="6">Forest Guard Details</th>
+                            <th rowspan="2">Action</th>
+                        </tr>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Circle</th>
+                            <th>Division</th>
+                            <th>Range</th>
+                            <th>Block</th>
+                            <th>Beat</th>
+                            
+                            <!-- RFO -->
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>DOA</th>
+                            <th>DOJ</th>
+                            <th>Prev Posting</th>
+                            <th>Photo</th>
+
+                            <!-- Dy Ranger -->
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>DOA</th>
+                            <th>DOJ</th>
+                            <th>Prev Posting</th>
+                            <th>Photo</th>
+
+                            <!-- Forest Guard -->
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>DOA</th>
+                            <th>DOJ</th>
+                            <th>Prev Posting</th>
+                            <th>Photo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- 163 Rows Injected Here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT BIO-DATA MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">Edit Field Staff Bio Data</h3>
+            <form id="edit-form" onsubmit="saveBioData(event)">
+                <input type="hidden" id="edit-id">
+                
+                <!-- SECTION: RFO -->
+                <div class="section-title">Range Forest Officer (RFO) Details</div>
+                <div class="modal-grid">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="rfo-name">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth (DOB)</label>
+                        <input type="date" id="rfo-dob">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Appointment (DOA)</label>
+                        <input type="date" id="rfo-doa">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Joining (DOJ)</label>
+                        <input type="date" id="rfo-doj">
+                    </div>
+                    <div class="form-group">
+                        <label>Previous Place of Posting</label>
+                        <input type="text" id="rfo-prev">
+                    </div>
+                    <div class="form-group">
+                        <label>Photograph</label>
+                        <input type="file" id="rfo-photo-file" accept="image/*" onchange="previewStaffImage(this, 'rfo')">
+                    </div>
+                </div>
+
+                <!-- SECTION: DEPUTY RANGER -->
+                <div class="section-title">Deputy Ranger Details</div>
+                <div class="modal-grid">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="dy-name">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth (DOB)</label>
+                        <input type="date" id="dy-dob">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Appointment (DOA)</label>
+                        <input type="date" id="dy-doa">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Joining (DOJ)</label>
+                        <input type="date" id="dy-doj">
+                    </div>
+                    <div class="form-group">
+                        <label>Previous Place of Posting</label>
+                        <input type="text" id="dy-prev">
+                    </div>
+                    <div class="form-group">
+                        <label>Photograph</label>
+                        <input type="file" id="dy-photo-file" accept="image/*" onchange="previewStaffImage(this, 'dy')">
+                    </div>
+                </div>
+
+                <!-- SECTION: FOREST GUARD -->
+                <div class="section-title">Forest Guard Details</div>
+                <div class="modal-grid">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="fg-name">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth (DOB)</label>
+                        <input type="date" id="fg-dob">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Appointment (DOA)</label>
+                        <input type="date" id="fg-doa">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Joining (DOJ)</label>
+                        <input type="date" id="fg-doj">
+                    </div>
+                    <div class="form-group">
+                        <label>Previous Place of Posting</label>
+                        <input type="text" id="fg-prev">
+                    </div>
+                    <div class="form-group">
+                        <label>Photograph</label>
+                        <input type="file" id="fg-photo-file" accept="image/*" onchange="previewStaffImage(this, 'fg')">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-full" style="margin-top: 20px;">Save All Bio Data</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // BASE DATASET STRUCTURE (163 Records)
+        let defaultData = [
+            {sr: 1, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Bharari", beat: "Naula"},
+            {sr: 2, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Bharari", beat: "Sainj"},
+            {sr: 3, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Bharari", beat: "Saroga"},
+            {sr: 4, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Bharari", beat: "Bhareri"},
+            {sr: 5, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Narkanda", beat: "Narkanda"},
+            {sr: 6, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Narkanda", beat: "Hatu"},
+            {sr: 7, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Narkanda", beat: "Madhawani"},
+            {sr: 8, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Shilaroo", beat: "Bijlidhar"},
+            {sr: 9, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Shilaroo", beat: "Shilaroo"},
+            {sr: 10, circle: "Rampur", division: "Kotgarh", range: "Kotgarh", block: "Shilaroo", beat: "Sharmla"},
+            {sr: 11, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Kumarsain", beat: "Oddi"},
+            {sr: 12, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Kumarsain", beat: "Kumarsain"},
+            {sr: 13, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Kumarsain", beat: "Galani"},
+            {sr: 14, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Kumarsain", beat: "Dhalli"},
+            {sr: 15, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Kangal", beat: "Kangal"},
+            {sr: 16, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Kangal", beat: "Khudlu"},
+            {sr: 17, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Kangal", beat: "Dhar"},
+            {sr: 18, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Baragaon", beat: "Teshan"},
+            {sr: 19, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Baragaon", beat: "Shiwan"},
+            {sr: 20, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Baragaon", beat: "Baragaon"},
+            {sr: 21, circle: "Rampur", division: "Kotgarh", range: "Kumarsain", block: "Baragaon", beat: "Ahar"},
+            {sr: 22, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Sarahan", beat: "Bhadal"},
+            {sr: 23, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Sarahan", beat: "Sarahan"},
+            {sr: 24, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Sarahan", beat: "Bhagwat"},
+            {sr: 25, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Gopalpur", beat: "Mashnoo"},
+            {sr: 26, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Gopalpur", beat: "Dofda"},
+            {sr: 27, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Gopalpur", beat: "Gopalpur"},
+            {sr: 28, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Jaghori", beat: "Koot"},
+            {sr: 29, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Jaghori", beat: "Rawancha"},
+            {sr: 30, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Jaghori", beat: "Jaghori"},
+            {sr: 31, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Phancha", beat: "Phancha"},
+            {sr: 32, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Phancha", beat: "Kao Bil"},
+            {sr: 33, circle: "Rampur", division: "Rampur", range: "Sarahan", block: "Phancha", beat: "Sarpara"},
+            {sr: 34, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Rampur", beat: "Rampur"},
+            {sr: 35, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Rampur", beat: "Pashada"},
+            {sr: 36, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Rampur", beat: "Sanathli"},
+            {sr: 37, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Rampur", beat: "jhakri"},
+            {sr: 38, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Nogli", beat: "Nogli"},
+            {sr: 39, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Nogli", beat: "Dutt Nagar"},
+            {sr: 40, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Nogli", beat: "Dansa"},
+            {sr: 41, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Deothi", beat: "Deothi"},
+            {sr: 42, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Deothi", beat: "Darshal"},
+            {sr: 43, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Deothi", beat: "Munish"},
+            {sr: 44, circle: "Rampur", division: "Rampur", range: "Rampur", block: "Deothi", beat: "Kashapat"},
+            {sr: 45, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Taklach", beat: "Taklach"},
+            {sr: 46, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Taklach", beat: "Darkali"},
+            {sr: 47, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Taklach", beat: "Thada"},
+            {sr: 48, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Bahli", beat: "Bahli"},
+            {sr: 49, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Bahli", beat: "Chowka"},
+            {sr: 50, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Bahli", beat: "Saran Jarasi"},
+            {sr: 51, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Surad", beat: "Beounthal"},
+            {sr: 52, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Surad", beat: "Surad"},
+            {sr: 53, circle: "Rampur", division: "Rampur", range: "Bahli", block: "Surad", beat: "Kamadi"},
+            {sr: 54, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Nankhari", beat: "Bai-Bahli"},
+            {sr: 55, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Nankhari", beat: "Kungal Mundhar"},
+            {sr: 56, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Nankhari", beat: "Nankhari"},
+            {sr: 57, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Nankhari", beat: "Bagalthi"},
+            {sr: 58, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Sholi", beat: "Sholi"},
+            {sr: 59, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Sholi", beat: "Thaili Chakti"},
+            {sr: 60, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Sholi", beat: "Delath"},
+            {sr: 61, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Gahan", beat: "Gahan"},
+            {sr: 62, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Gahan", beat: "Taprog"},
+            {sr: 63, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Gahan", beat: "Jahoo"},
+            {sr: 64, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Gahan", beat: "Adoo"},
+            {sr: 65, circle: "Rampur", division: "Rampur", range: "Nankhari", block: "Gahan", beat: "Peojna"},
+            {sr: 66, circle: "Rampur", division: "Kinnaur", range: "Nichar", block: "Tranda", beat: "Tranda"},
+            {sr: 67, circle: "Rampur", division: "Kinnaur", range: "Nichar", block: "Tranda", beat: "Thach"},
+            {sr: 68, circle: "Rampur", division: "Kinnaur", range: "Nichar", block: "Sungra", beat: "Bari"},
+            {sr: 69, circle: "Rampur", division: "Kinnaur", range: "Nichar", block: "Sungra", beat: "Sungra"},
+            {sr: 70, circle: "Rampur", division: "Kinnaur", range: "Nichar", block: "Nichar", beat: "Nichar"},
+            {sr: 71, circle: "Rampur", division: "Kinnaur", range: "Nichar", block: "Nichar", beat: "Panvi"},
+            {sr: 72, circle: "Rampur", division: "Kinnaur", range: "Nichar", block: "Nichar", beat: "Kaksthal"},
+            {sr: 73, circle: "Rampur", division: "Kinnaur", range: "Bhaba Nagar", block: "Bhaba Nagar", beat: "Chaura"},
+            {sr: 74, circle: "Rampur", division: "Kinnaur", range: "Bhaba Nagar", block: "Bhaba Nagar", beat: "Bhaba Nagar"},
+            {sr: 75, circle: "Rampur", division: "Kinnaur", range: "Bhaba Nagar", block: "Bhaba Nagar", beat: "Rupi"},
+            {sr: 76, circle: "Rampur", division: "Kinnaur", range: "Bhaba Nagar", block: "Bhaba Nagar", beat: "Bada Kamba"},
+            {sr: 77, circle: "Rampur", division: "Kinnaur", range: "Bhaba Nagar", block: "Sholtu", beat: "Sholtu"},
+            {sr: 78, circle: "Rampur", division: "Kinnaur", range: "Bhaba Nagar", block: "Sholtu", beat: "Jani-Ramni"},
+            {sr: 79, circle: "Rampur", division: "Kinnaur", range: "Katgaon", block: "Katgaon", beat: "Kafnoo"},
+            {sr: 80, circle: "Rampur", division: "Kinnaur", range: "Katgaon", block: "Katgaon", beat: "Musrang"},
+            {sr: 81, circle: "Rampur", division: "Kinnaur", range: "Katgaon", block: "Katgaon", beat: "Nathpa"},
+            {sr: 82, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Kilba", beat: "Kilba"},
+            {sr: 83, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Kilba", beat: "Punag"},
+            {sr: 84, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Karchham", beat: "Sapni"},
+            {sr: 85, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Karchham", beat: "Shong"},
+            {sr: 86, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Karchham", beat: "Ralli"},
+            {sr: 87, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Sangla", beat: "Rakkcham"},
+            {sr: 88, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Sangla", beat: "Sangla"},
+            {sr: 89, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Sangla", beat: "Seringche"},
+            {sr: 90, circle: "Rampur", division: "Kinnaur", range: "Kilba", block: "Sangla", beat: "Chansu"},
+            {sr: 91, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Urni", beat: "Tapri"},
+            {sr: 92, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Urni", beat: "Urni"},
+            {sr: 93, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Urni", beat: "Runang"},
+            {sr: 94, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Shongtong", beat: "Barang"},
+            {sr: 95, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Shongtong", beat: "Tangling"},
+            {sr: 96, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Shongtong", beat: "Purbani"},
+            {sr: 97, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Kalpa", beat: "Kalpa"},
+            {sr: 98, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Kalpa", beat: "Pangi"},
+            {sr: 99, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Kalpa", beat: "Roghi"},
+            {sr: 100, circle: "Rampur", division: "Kinnaur", range: "Kalpa", block: "Kalpa", beat: "Reckong-Peo"},
+            {sr: 101, circle: "Rampur", division: "Kinnaur", range: "Pooh", block: "Pooh", beat: "Pooh"},
+            {sr: 102, circle: "Rampur", division: "Kinnaur", range: "Pooh", block: "Pooh", beat: "Dubling"},
+            {sr: 103, circle: "Rampur", division: "Kinnaur", range: "Pooh", block: "Pooh", beat: "Namgia"},
+            {sr: 104, circle: "Rampur", division: "Kinnaur", range: "Pooh", block: "Kanam", beat: "Kanam"},
+            {sr: 105, circle: "Rampur", division: "Kinnaur", range: "Pooh", block: "Kanam", beat: "Sunam"},
+            {sr: 106, circle: "Rampur", division: "Kinnaur", range: "Pooh", block: "Kanam", beat: "Giabong"},
+            {sr: 107, circle: "Rampur", division: "Kinnaur", range: "Moorang", block: "Ribba", beat: "Ribba"},
+            {sr: 108, circle: "Rampur", division: "Kinnaur", range: "Moorang", block: "Ribba", beat: "Rispa"},
+            {sr: 109, circle: "Rampur", division: "Kinnaur", range: "Moorang", block: "Ribba", beat: "Moorang"},
+            {sr: 110, circle: "Rampur", division: "Kinnaur", range: "Moorang", block: "Jangi", beat: "Jangi"},
+            {sr: 111, circle: "Rampur", division: "Kinnaur", range: "Moorang", block: "Jangi", beat: "Rarang"},
+            {sr: 112, circle: "Rampur", division: "Kinnaur", range: "Moorang", block: "Jangi", beat: "Lippa"},
+            {sr: 113, circle: "Rampur", division: "Kinnaur", range: "Malling", block: "Malling", beat: "Malling"},
+            {sr: 114, circle: "Rampur", division: "Kinnaur", range: "Malling", block: "Malling", beat: "Chango"},
+            {sr: 115, circle: "Rampur", division: "Kinnaur", range: "Malling", block: "Malling", beat: "Sumra"},
+            {sr: 116, circle: "Rampur", division: "Kinnaur", range: "Malling", block: "Leo", beat: "Leo"},
+            {sr: 117, circle: "Rampur", division: "Kinnaur", range: "Malling", block: "Leo", beat: "Hango-Chulling"},
+            {sr: 118, circle: "Rampur", division: "Ani", range: "Chowai", block: "Chowai", beat: "Chowai"},
+            {sr: 119, circle: "Rampur", division: "Ani", range: "Chowai", block: "Chowai", beat: "Gad at Chowai"},
+            {sr: 120, circle: "Rampur", division: "Ani", range: "Chowai", block: "Chowai", beat: "Haripur at Nigan"},
+            {sr: 121, circle: "Rampur", division: "Ani", range: "Chowai", block: "Chowai", beat: "Kutwa"},
+            {sr: 122, circle: "Rampur", division: "Ani", range: "Chowai", block: "Chowai", beat: "Namhog"},
+            {sr: 123, circle: "Rampur", division: "Ani", range: "Chowai", block: "Khanag", beat: "Kot at Khanag"},
+            {sr: 124, circle: "Rampur", division: "Ani", range: "Chowai", block: "Khanag", beat: "Kohila at Kamand"},
+            {sr: 125, circle: "Rampur", division: "Ani", range: "Chowai", block: "Khanag", beat: "Deem"},
+            {sr: 126, circle: "Rampur", division: "Ani", range: "Chowai", block: "Khanag", beat: "Tarala"},
+            {sr: 127, circle: "Rampur", division: "Ani", range: "Chowai", block: "Paneo", beat: "Patarna"},
+            {sr: 128, circle: "Rampur", division: "Ani", range: "Chowai", block: "Paneo", beat: "Bai"},
+            {sr: 129, circle: "Rampur", division: "Ani", range: "Chowai", block: "Paneo", beat: "Peog at Binan"},
+            {sr: 130, circle: "Rampur", division: "Ani", range: "Chowai", block: "Paneo", beat: "Karana"},
+            {sr: 131, circle: "Rampur", division: "Ani", range: "Chowai", block: "Takrasi", beat: "Tharvi at Takrasi"},
+            {sr: 132, circle: "Rampur", division: "Ani", range: "Chowai", block: "Takrasi", beat: "Karshala"},
+            {sr: 133, circle: "Rampur", division: "Ani", range: "Chowai", block: "Takrasi", beat: "Kunir"},
+            {sr: 134, circle: "Rampur", division: "Ani", range: "Chowai", block: "Takrasi", beat: "Lohal"},
+            {sr: 135, circle: "Rampur", division: "Ani", range: "Nither", block: "Nither", beat: "Nither"},
+            {sr: 136, circle: "Rampur", division: "Ani", range: "Nither", block: "Nither", beat: "Sarahar"},
+            {sr: 137, circle: "Rampur", division: "Ani", range: "Nither", block: "Nither", beat: "Tandi at Katahar"},
+            {sr: 138, circle: "Rampur", division: "Ani", range: "Nither", block: "Moin", beat: "Moin"},
+            {sr: 139, circle: "Rampur", division: "Ani", range: "Nither", block: "Moin", beat: "Ghorla"},
+            {sr: 140, circle: "Rampur", division: "Ani", range: "Nither", block: "Moin", beat: "Koil"},
+            {sr: 141, circle: "Rampur", division: "Ani", range: "Nither", block: "Dalash", beat: "Dalash"},
+            {sr: 142, circle: "Rampur", division: "Ani", range: "Nither", block: "Dalash", beat: "Luhri"},
+            {sr: 143, circle: "Rampur", division: "Ani", range: "Nither", block: "Dalash", beat: "Kandagai"},
+            {sr: 144, circle: "Rampur", division: "Ani", range: "Nither", block: "Margi", beat: "Margi"},
+            {sr: 145, circle: "Rampur", division: "Ani", range: "Nither", block: "Margi", beat: "Katmor"},
+            {sr: 146, circle: "Rampur", division: "Ani", range: "Nither", block: "Margi", beat: "Ghatu"},
+            {sr: 147, circle: "Rampur", division: "Ani", range: "Nither", block: "Margi", beat: "Nore"},
+            {sr: 148, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Arsoo", beat: "Arsoo"},
+            {sr: 149, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Arsoo", beat: "Tharvi at Deem"},
+            {sr: 150, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Arsoo", beat: "Pali"},
+            {sr: 151, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Arsoo", beat: "Biuni"},
+            {sr: 152, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Nirmond", beat: "Nirmond"},
+            {sr: 153, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Nirmond", beat: "Averi at Nirmond"},
+            {sr: 154, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Nirmond", beat: "Brow"},
+            {sr: 155, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Nirmond", beat: "Pujarli"},
+            {sr: 156, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Sarahan", beat: "Sarahan"},
+            {sr: 157, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Sarahan", beat: "Shamani"},
+            {sr: 158, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Sarahan", beat: "Tharla"},
+            {sr: 159, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Sarahan", beat: "Jawagi"},
+            {sr: 160, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Kharga", beat: "Kharga"},
+            {sr: 161, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Kharga", beat: "Sarga"},
+            {sr: 162, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Kharga", beat: "Kindla"},
+            {sr: 163, circle: "Rampur", division: "Ani", range: "Arsoo", block: "Kharga", beat: "Tunan"}
+        ];
+
+        // Ensure nested structure exists for each level
+        defaultData = defaultData.map(item => ({
+            ...item,
+            rfo: item.rfo || { name: "", dob: "", doa: "", doj: "", prev: "", photo: "" },
+            dy: item.dy || { name: "", dob: "", doa: "", doj: "", prev: "", photo: "" },
+            fg: item.fg || { name: "", dob: "", doa: "", doj: "", prev: "", photo: "" }
+        }));
+
+        // Load saved state or default
+        let savedData = localStorage.getItem("rampurDetailedForestData");
+        let forestData = savedData ? JSON.parse(savedData) : defaultData;
+
+        let tempPhotos = { rfo: "", dy: "", fg: "" };
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById("username").value;
+            const p = document.getElementById("password").value;
+            if (u === "admin" && p === "admin123") {
+                document.getElementById("login-page").style.display = "none";
+                document.getElementById("app-page").style.display = "block";
+                renderTable();
+            } else {
+                document.getElementById("login-error").style.display = "block";
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById("app-page").style.display = "none";
+            document.getElementById("login-page").style.display = "flex";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("login-error").style.display = "none";
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById("table-body");
+            tbody.innerHTML = "";
+
+            forestData.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${item.sr}</td>
+                    <td>${item.circle}</td>
+                    <td>${item.division}</td>
+                    <td>${item.range}</td>
+                    <td>${item.block}</td>
+                    <td><strong>${item.beat}</strong></td>
+
+                    <!-- RFO -->
+                    <td>${item.rfo.name || '-'}</td>
+                    <td>${item.rfo.dob || '-'}</td>
+                    <td>${item.rfo.doa || '-'}</td>
+                    <td>${item.rfo.doj || '-'}</td>
+                    <td>${item.rfo.prev || '-'}</td>
+                    <td>${item.rfo.photo ? `<img src="${item.rfo.photo}" class="thumb-img">` : '-'}</td>
+
+                    <!-- Dy Ranger -->
+                    <td>${item.dy.name || '-'}</td>
+                    <td>${item.dy.dob || '-'}</td>
+                    <td>${item.dy.doa || '-'}</td>
+                    <td>${item.dy.doj || '-'}</td>
+                    <td>${item.dy.prev || '-'}</td>
+                    <td>${item.dy.photo ? `<img src="${item.dy.photo}" class="thumb-img">` : '-'}</td>
+
+                    <!-- Forest Guard -->
+                    <td>${item.fg.name || '-'}</td>
+                    <td>${item.fg.dob || '-'}</td>
+                    <td>${item.fg.doa || '-'}</td>
+                    <td>${item.fg.doj || '-'}</td>
+                    <td>${item.fg.prev || '-'}</td>
+                    <td>${item.fg.photo ? `<img src="${item.fg.photo}" class="thumb-img">` : '-'}</td>
+
+                    <td><button class="btn-edit" onclick="openModal(${item.sr})">Edit</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTable() {
+            const input = document.getElementById("search-input").value.toUpperCase();
+            const rows = document.getElementById("table-body").getElementsByTagName("tr");
+
+            for (let i = 0; i < rows.length; i++) {
+                const text = rows[i].textContent || rows[i].innerText;
+                rows[i].style.display = text.toUpperCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
+
+        function openModal(sr) {
+            const record = forestData.find(item => item.sr === sr);
+            if (!record) return;
+
+            document.getElementById("edit-id").value = record.sr;
+
+            // Load RFO
+            document.getElementById("rfo-name").value = record.rfo.name || "";
+            document.getElementById("rfo-dob").value = record.rfo.dob || "";
+            document.getElementById("rfo-doa").value = record.rfo.doa || "";
+            document.getElementById("rfo-doj").value = record.rfo.doj || "";
+            document.getElementById("rfo-prev").value = record.rfo.prev || "";
+            tempPhotos.rfo = record.rfo.photo || "";
+
+            // Load Dy Ranger
+            document.getElementById("dy-name").value = record.dy.name || "";
+            document.getElementById("dy-dob").value = record.dy.dob || "";
+            document.getElementById("dy-doa").value = record.dy.doa || "";
+            document.getElementById("dy-doj").value = record.dy.doj || "";
+            document.getElementById("dy-prev").value = record.dy.prev || "";
+            tempPhotos.dy = record.dy.photo || "";
+
+            // Load FG
+            document.getElementById("fg-name").value = record.fg.name || "";
+            document.getElementById("fg-dob").value = record.fg.dob || "";
+            document.getElementById("fg-doa").value = record.fg.doa || "";
+            document.getElementById("fg-doj").value = record.fg.doj || "";
+            document.getElementById("fg-prev").value = record.fg.prev || "";
+            tempPhotos.fg = record.fg.photo || "";
+
+            document.getElementById("modal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+            tempPhotos = { rfo: "", dy: "", fg: "" };
+        }
+
+        function previewStaffImage(input, role) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    tempPhotos[role] = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveBioData(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById("edit-id").value);
+            const index = forestData.findIndex(item => item.sr === id);
+
+            if (index !== -1) {
+                forestData[index].rfo = {
+                    name: document.getElementById("rfo-name").value,
+                    dob: document.getElementById("rfo-dob").value,
+                    doa: document.getElementById("rfo-doa").value,
+                    doj: document.getElementById("rfo-doj").value,
+                    prev: document.getElementById("rfo-prev").value,
+                    photo: tempPhotos.rfo
+                };
+
+                forestData[index].dy = {
+                    name: document.getElementById("dy-name").value,
+                    dob: document.getElementById("dy-dob").value,
+                    doa: document.getElementById("dy-doa").value,
+                    doj: document.getElementById("dy-doj").value,
+                    prev: document.getElementById("dy-prev").value,
+                    photo: tempPhotos.dy
+                };
+
+                forestData[index].fg = {
+                    name: document.getElementById("fg-name").value,
+                    dob: document.getElementById("fg-dob").value,
+                    doa: document.getElementById("fg-doa").value,
+                    doj: document.getElementById("fg-doj").value,
+                    prev: document.getElementById("fg-prev").value,
+                    photo: tempPhotos.fg
+                };
+
+                localStorage.setItem("rampurDetailedForestData", JSON.stringify(forestData));
+                renderTable();
+                closeModal();
+            }
+        }
+
+        // EXPORT TO EXCEL (.xlsx)
+        function exportToExcel() {
+            const table = document.getElementById("bio-table");
+            const wb = XLSX.utils.table_to_book(table, { sheet: "BioData" });
+            XLSX.writeFile(wb, "Rampur_Forest_Circle_BioData.xlsx");
+        }
+
+        // EXPORT TO MS WORD (.doc)
+        function exportToWord() {
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+                "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+                "xmlns='http://www.w3.org/TR/REC-html40'>"+
+                "<head><meta charset='utf-8'><title>Export Word</title><style>table{border-collapse:collapse;} td,th{border:1px solid #999;padding:5px;font-size:10pt;}</style></head><body>";
+            const footer = "</body></html>";
+            const sourceHTML = header + document.getElementById("bio-table").outerHTML + footer;
+
+            const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+            const fileDownload = document.createElement("a");
+            document.body.appendChild(fileDownload);
+            fileDownload.href = source;
+            fileDownload.download = 'Rampur_Forest_Circle_BioData.doc';
+            fileDownload.click();
+            document.body.removeChild(fileDownload);
+        }
+
+        // EXPORT TO PDF (PRINT FORMAT)
+        function exportToPDF() {
+            window.print();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("modal");
+            if (event.target === modal) closeModal();
+        };
+    </script>
+</body>
+</html>
